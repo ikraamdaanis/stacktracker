@@ -38,14 +38,15 @@ function App() {
 
     const matchesService =
       !activeFilters.service ||
-      project.services.includes(activeFilters.service);
+      project.services.some(s => s.name === activeFilters.service);
 
     const matchesDatabase =
       !activeFilters.database ||
-      project.databases.includes(activeFilters.database);
+      project.databases.some(d => d.name === activeFilters.database);
 
     const matchesHosting =
-      !activeFilters.hosting || project.hosting.includes(activeFilters.hosting);
+      !activeFilters.hosting ||
+      project.hosting.some(h => h.name === activeFilters.hosting);
 
     return matchesSearch && matchesService && matchesDatabase && matchesHosting;
   });
@@ -81,9 +82,6 @@ function App() {
     setEditingProject(undefined);
   }
 
-  const hasActiveFilters =
-    activeFilters.service || activeFilters.database || activeFilters.hosting;
-
   return (
     <div className="flex h-screen flex-col bg-white">
       <div className="flex flex-col gap-6 border-b border-zinc-300 p-4">
@@ -98,32 +96,20 @@ function App() {
       </div>
       <section className="h-full bg-[#FAFAFA] p-4">
         <div className="mx-auto max-w-7xl">
-          <div className="mb-4 flex items-center justify-between gap-2">
-            <SearchBar value={searchTerm} onChange={setSearchTerm} />
-            {allTags && (
-              <TagFilter
-                tags={allTags}
-                activeFilters={activeFilters}
-                onFilterChange={handleFilterChange}
-              />
-            )}
-            {hasActiveFilters && (
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-neutral-600">
-                  Active filters:
-                </span>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setActiveFilters({})}
-                  className="h-7 text-xs"
-                >
-                  Clear all
-                </Button>
-              </div>
-            )}
+          <div className="mb-6 flex items-center justify-between gap-3">
+            <div className="flex flex-1 items-center gap-2">
+              <SearchBar value={searchTerm} onChange={setSearchTerm} />
+              {allTags && (
+                <TagFilter
+                  tags={allTags}
+                  activeFilters={activeFilters}
+                  onFilterChange={handleFilterChange}
+                />
+              )}
+            </div>
             <Button
               onClick={handleAddNew}
+              size="sm"
               className="bg-black text-white hover:bg-neutral-800"
             >
               <Plus className="h-4 w-4" />

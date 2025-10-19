@@ -1,3 +1,4 @@
+import { ServiceLogo } from "components/service-logo";
 import { Badge } from "components/ui/badge";
 import { Button } from "components/ui/button";
 import {
@@ -8,6 +9,12 @@ import {
   CardTitle
 } from "components/ui/card";
 import type { Doc } from "convex/_generated/dataModel";
+import {
+  getSlugFromName,
+  POPULAR_DATABASES,
+  POPULAR_HOSTING,
+  POPULAR_SERVICES
+} from "lib/service-data";
 import { ExternalLink, Pencil, Trash2 } from "lucide-react";
 
 interface ProjectCardProps {
@@ -56,15 +63,50 @@ export function ProjectCard({ project, onEdit, onDelete }: ProjectCardProps) {
               Services
             </span>
             <div className="flex flex-wrap gap-1.5">
-              {project.services.map(service => (
-                <Badge
-                  key={service}
-                  variant="secondary"
-                  className="bg-blue-50 text-blue-700 hover:bg-blue-100"
-                >
-                  {service}
-                </Badge>
-              ))}
+              {project.services.map(service => {
+                const BadgeContent = (
+                  <>
+                    <ServiceLogo
+                      name={service.name}
+                      slug={getSlugFromName(service.name, POPULAR_SERVICES)}
+                      size={14}
+                    />
+                    {service.name}
+                    {service.url && (
+                      <ExternalLink className="ml-1 h-3 w-3 opacity-70" />
+                    )}
+                  </>
+                );
+
+                if (service.url) {
+                  return (
+                    <a
+                      key={service.name}
+                      href={service.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-block"
+                    >
+                      <Badge
+                        variant="secondary"
+                        className="flex cursor-pointer items-center gap-1.5 bg-blue-50 text-blue-700 transition-colors hover:bg-blue-100"
+                      >
+                        {BadgeContent}
+                      </Badge>
+                    </a>
+                  );
+                }
+
+                return (
+                  <Badge
+                    key={service.name}
+                    variant="secondary"
+                    className="flex items-center gap-1.5 bg-blue-50 text-blue-700"
+                  >
+                    {BadgeContent}
+                  </Badge>
+                );
+              })}
             </div>
           </div>
         )}
@@ -74,15 +116,50 @@ export function ProjectCard({ project, onEdit, onDelete }: ProjectCardProps) {
               Databases
             </span>
             <div className="flex flex-wrap gap-1.5">
-              {project.databases.map(db => (
-                <Badge
-                  key={db}
-                  variant="secondary"
-                  className="bg-green-50 text-green-700 hover:bg-green-100"
-                >
-                  {db}
-                </Badge>
-              ))}
+              {project.databases.map(db => {
+                const BadgeContent = (
+                  <>
+                    <ServiceLogo
+                      name={db.name}
+                      slug={getSlugFromName(db.name, POPULAR_DATABASES)}
+                      size={14}
+                    />
+                    {db.name}
+                    {db.url && (
+                      <ExternalLink className="ml-1 h-3 w-3 opacity-70" />
+                    )}
+                  </>
+                );
+
+                if (db.url) {
+                  return (
+                    <a
+                      key={db.name}
+                      href={db.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-block"
+                    >
+                      <Badge
+                        variant="secondary"
+                        className="flex cursor-pointer items-center gap-1.5 bg-green-50 text-green-700 transition-colors hover:bg-green-100"
+                      >
+                        {BadgeContent}
+                      </Badge>
+                    </a>
+                  );
+                }
+
+                return (
+                  <Badge
+                    key={db.name}
+                    variant="secondary"
+                    className="flex items-center gap-1.5 bg-green-50 text-green-700"
+                  >
+                    {BadgeContent}
+                  </Badge>
+                );
+              })}
             </div>
           </div>
         )}
@@ -92,15 +169,50 @@ export function ProjectCard({ project, onEdit, onDelete }: ProjectCardProps) {
               Hosting
             </span>
             <div className="flex flex-wrap gap-1.5">
-              {project.hosting.map(host => (
-                <Badge
-                  key={host}
-                  variant="secondary"
-                  className="bg-purple-50 text-purple-700 hover:bg-purple-100"
-                >
-                  {host}
-                </Badge>
-              ))}
+              {project.hosting.map(host => {
+                const BadgeContent = (
+                  <>
+                    <ServiceLogo
+                      name={host.name}
+                      slug={getSlugFromName(host.name, POPULAR_HOSTING)}
+                      size={14}
+                    />
+                    {host.name}
+                    {host.url && (
+                      <ExternalLink className="ml-1 h-3 w-3 opacity-70" />
+                    )}
+                  </>
+                );
+
+                if (host.url) {
+                  return (
+                    <a
+                      key={host.name}
+                      href={host.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-block"
+                    >
+                      <Badge
+                        variant="secondary"
+                        className="flex cursor-pointer items-center gap-1.5 bg-purple-50 text-purple-700 transition-colors hover:bg-purple-100"
+                      >
+                        {BadgeContent}
+                      </Badge>
+                    </a>
+                  );
+                }
+
+                return (
+                  <Badge
+                    key={host.name}
+                    variant="secondary"
+                    className="flex items-center gap-1.5 bg-purple-50 text-purple-700"
+                  >
+                    {BadgeContent}
+                  </Badge>
+                );
+              })}
             </div>
           </div>
         )}

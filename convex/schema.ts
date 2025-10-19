@@ -5,9 +5,25 @@ export default defineSchema({
   projects: defineTable({
     name: v.string(),
     description: v.string(),
-    services: v.array(v.string()),
-    databases: v.array(v.string()),
-    hosting: v.array(v.string()),
+    // Each service/database/hosting can have an optional URL
+    services: v.array(
+      v.object({
+        name: v.string(),
+        url: v.optional(v.string())
+      })
+    ),
+    databases: v.array(
+      v.object({
+        name: v.string(),
+        url: v.optional(v.string())
+      })
+    ),
+    hosting: v.array(
+      v.object({
+        name: v.string(),
+        url: v.optional(v.string())
+      })
+    ),
     createdAt: v.number(),
     updatedAt: v.number(),
     dateStarted: v.optional(v.number()),
@@ -18,7 +34,6 @@ export default defineSchema({
   })
     .index("by_creation", ["createdAt"])
     .searchIndex("search_projects", {
-      searchField: "name",
-      filterFields: ["services", "databases", "hosting"]
+      searchField: "name"
     })
 });

@@ -2,7 +2,7 @@ import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 
 export const getProjects = query({
-  handler: async (ctx) => {
+  handler: async ctx => {
     const projects = await ctx.db
       .query("projects")
       .withIndex("by_creation")
@@ -36,22 +36,28 @@ export const searchProjects = query({
     if (args.searchTerm) {
       const term = args.searchTerm.toLowerCase();
       projects = projects.filter(
-        (p) =>
+        p =>
           p.name.toLowerCase().includes(term) ||
           p.description.toLowerCase().includes(term)
       );
     }
 
     if (args.service) {
-      projects = projects.filter((p) => p.services.includes(args.service!));
+      projects = projects.filter(p =>
+        p.services.some(s => s.name === args.service)
+      );
     }
 
     if (args.database) {
-      projects = projects.filter((p) => p.databases.includes(args.database!));
+      projects = projects.filter(p =>
+        p.databases.some(d => d.name === args.database)
+      );
     }
 
     if (args.hosting) {
-      projects = projects.filter((p) => p.hosting.includes(args.hosting!));
+      projects = projects.filter(p =>
+        p.hosting.some(h => h.name === args.hosting)
+      );
     }
 
     return projects;
@@ -59,17 +65,17 @@ export const searchProjects = query({
 });
 
 export const getAllTags = query({
-  handler: async (ctx) => {
+  handler: async ctx => {
     const projects = await ctx.db.query("projects").collect();
 
     const services = new Set<string>();
     const databases = new Set<string>();
     const hosting = new Set<string>();
 
-    projects.forEach((project) => {
-      project.services.forEach((s) => services.add(s));
-      project.databases.forEach((d) => databases.add(d));
-      project.hosting.forEach((h) => hosting.add(h));
+    projects.forEach(project => {
+      project.services.forEach(s => services.add(s.name));
+      project.databases.forEach(d => databases.add(d.name));
+      project.hosting.forEach(h => hosting.add(h.name));
     });
 
     return {
@@ -84,9 +90,24 @@ export const createProject = mutation({
   args: {
     name: v.string(),
     description: v.string(),
-    services: v.array(v.string()),
-    databases: v.array(v.string()),
-    hosting: v.array(v.string()),
+    services: v.array(
+      v.object({
+        name: v.string(),
+        url: v.optional(v.string())
+      })
+    ),
+    databases: v.array(
+      v.object({
+        name: v.string(),
+        url: v.optional(v.string())
+      })
+    ),
+    hosting: v.array(
+      v.object({
+        name: v.string(),
+        url: v.optional(v.string())
+      })
+    ),
     dateStarted: v.optional(v.number()),
     dateEnded: v.optional(v.number()),
     monthlyCost: v.optional(v.number()),
@@ -109,9 +130,24 @@ export const updateProject = mutation({
     id: v.id("projects"),
     name: v.string(),
     description: v.string(),
-    services: v.array(v.string()),
-    databases: v.array(v.string()),
-    hosting: v.array(v.string()),
+    services: v.array(
+      v.object({
+        name: v.string(),
+        url: v.optional(v.string())
+      })
+    ),
+    databases: v.array(
+      v.object({
+        name: v.string(),
+        url: v.optional(v.string())
+      })
+    ),
+    hosting: v.array(
+      v.object({
+        name: v.string(),
+        url: v.optional(v.string())
+      })
+    ),
     dateStarted: v.optional(v.number()),
     dateEnded: v.optional(v.number()),
     monthlyCost: v.optional(v.number()),
@@ -134,4 +170,3 @@ export const deleteProject = mutation({
     await ctx.db.delete(args.id);
   }
 });
-

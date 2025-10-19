@@ -1,18 +1,28 @@
 import { useForm } from "@tanstack/react-form";
-import { TagInput } from "components/tag-input";
+import { SearchableMultiSelect } from "components/searchable-multi-select";
 import { Button } from "components/ui/button";
 import { Input } from "components/ui/input";
 import { Label } from "components/ui/label";
 import { Textarea } from "components/ui/textarea";
 import type { Id } from "convex/_generated/dataModel";
+import {
+  POPULAR_DATABASES,
+  POPULAR_HOSTING,
+  POPULAR_SERVICES
+} from "lib/service-data";
 import { z } from "zod";
+
+const serviceSchema = z.object({
+  name: z.string(),
+  url: z.string().optional()
+});
 
 const projectSchema = z.object({
   name: z.string().min(1, "Project name is required"),
   description: z.string().min(1, "Description is required"),
-  services: z.array(z.string()),
-  databases: z.array(z.string()),
-  hosting: z.array(z.string()),
+  services: z.array(serviceSchema),
+  databases: z.array(serviceSchema),
+  hosting: z.array(serviceSchema),
   dashboardUrl: z.string().optional(),
   monthlyCost: z.number().optional(),
   notes: z.string().optional()
@@ -120,10 +130,12 @@ export function ProjectForm({
         {field => (
           <div className="flex flex-col gap-2">
             <Label>Services</Label>
-            <TagInput
+            <SearchableMultiSelect
               value={field.state.value}
               onChange={tags => field.handleChange(tags)}
-              placeholder="e.g., Stripe, SendGrid, Clerk"
+              options={POPULAR_SERVICES}
+              placeholder="Search services..."
+              label="Select services"
             />
           </div>
         )}
@@ -132,10 +144,12 @@ export function ProjectForm({
         {field => (
           <div className="flex flex-col gap-2">
             <Label>Databases</Label>
-            <TagInput
+            <SearchableMultiSelect
               value={field.state.value}
               onChange={tags => field.handleChange(tags)}
-              placeholder="e.g., PostgreSQL, MongoDB, Redis"
+              options={POPULAR_DATABASES}
+              placeholder="Search databases..."
+              label="Select databases"
             />
           </div>
         )}
@@ -144,10 +158,12 @@ export function ProjectForm({
         {field => (
           <div className="flex flex-col gap-2">
             <Label>Hosting / Deployment</Label>
-            <TagInput
+            <SearchableMultiSelect
               value={field.state.value}
               onChange={tags => field.handleChange(tags)}
-              placeholder="e.g., Vercel, Railway, AWS"
+              options={POPULAR_HOSTING}
+              placeholder="Search hosting..."
+              label="Select hosting"
             />
           </div>
         )}
