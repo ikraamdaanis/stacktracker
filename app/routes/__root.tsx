@@ -7,6 +7,7 @@ import {
 } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import TanStackQueryDevtools from "integrations/tanstack-query/devtools";
+import { ConvexClientProvider } from "lib/convex-client";
 import appCss from "styles.css?url";
 
 export const Route = createRootRouteWithContext<{
@@ -22,7 +23,7 @@ export const Route = createRootRouteWithContext<{
         content: "width=device-width, initial-scale=1"
       },
       {
-        title: "TanStack Start Starter"
+        title: "StackTracker"
       }
     ],
     links: [
@@ -43,19 +44,21 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        {children}
-        <TanStackDevtools
-          config={{
-            position: "bottom-right"
-          }}
-          plugins={[
-            {
-              name: "Tanstack Router",
-              render: <TanStackRouterDevtoolsPanel />
-            },
-            TanStackQueryDevtools
-          ]}
-        />
+        <ConvexClientProvider>
+          {children}
+          <TanStackDevtools
+            config={{
+              position: "bottom-right"
+            }}
+            plugins={[
+              {
+                name: "Tanstack Router",
+                render: <TanStackRouterDevtoolsPanel />
+              },
+              TanStackQueryDevtools
+            ]}
+          />
+        </ConvexClientProvider>
         <Scripts />
       </body>
     </html>

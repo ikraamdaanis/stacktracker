@@ -8,7 +8,8 @@ export default [
   {
     rules: {
       "import/order": ["off"],
-      "sort-imports": ["off"]
+      "sort-imports": ["off"],
+      "@typescript-eslint/array-type": ["off"]
     }
   }
 ];
